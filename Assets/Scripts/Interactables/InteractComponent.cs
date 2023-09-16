@@ -27,4 +27,9 @@ public class InteractComponent : MonoBehaviour, IInteractable
     public void PickUp()
     {
     }
+
+    public void Reset()
+    {
+        return;
+    }
 }

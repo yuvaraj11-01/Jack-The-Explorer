@@ -20,6 +20,8 @@ public class PickableComponent : MonoBehaviour, IInteractable
 
     public bool picked;
 
+    Vector3 initPos;
+
     public void Drop()
     {
         if (!picked) return;
@@ -41,6 +43,20 @@ public class PickableComponent : MonoBehaviour, IInteractable
             picked = false;
 
         });
+    }
+
+    public void Reset()
+    {
+        pickUpRig.weight = 0;
+
+        transform.SetParent(null, true);
+        transform.position = initPos;
+        picked = false;
+    }
+
+    private void OnEnable ()
+    {
+        Reset();
     }
 
     public void Interact()
@@ -72,8 +88,8 @@ public class PickableComponent : MonoBehaviour, IInteractable
         inputs = new InputControll();
         inputs.PlayerMap.Enable();
 
-        inputs.PlayerMap.Interact.performed += Interact_performed; ;
-
+        inputs.PlayerMap.Interact.performed += Interact_performed;
+        initPos = transform.position;
     }
 
     private void Interact_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)

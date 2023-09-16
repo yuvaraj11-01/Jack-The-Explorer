@@ -7,6 +7,7 @@ public class PlayerInteraction : MonoBehaviour
     IInteractable avilableInteraction;
     InputControll inputs;
     RectTransform UiObject;
+    Vector3 triggeredPos;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -15,6 +16,7 @@ public class PlayerInteraction : MonoBehaviour
             Debug.Log($"[PlayerInteraction] Enter {other.name}");
             UiObject = UIManager.Instance.ShowInteractUI(other.transform.position);
             avilableInteraction = interactable;
+            triggeredPos = other.transform.position;
             UiObject.position += (Vector3)avilableInteraction.interactionUIOffset;
         }
     }
@@ -36,6 +38,8 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (UiObject)
             Destroy(UiObject.gameObject);
+        avilableInteraction?.Reset();
+
         avilableInteraction = null;
     }
 

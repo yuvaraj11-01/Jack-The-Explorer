@@ -12,4 +12,6 @@ public interface IInteractable
     public void PickUp();
     public void Drop();
 
+    public void Reset();
+
 }
