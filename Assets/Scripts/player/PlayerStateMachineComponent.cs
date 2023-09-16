@@ -6,6 +6,7 @@ public class PlayerStateMachineComponent : MonoBehaviour
 {
     [SerializeField] [Range(1, 10)] float MoveSpeed;
     [SerializeField] PlayerAnimation playerAnimation;
+    [SerializeField] Transform SpawnPoint;
 
     private PlayerStateMachine _stateMachine;
     private void Awake()
@@ -15,6 +16,7 @@ public class PlayerStateMachineComponent : MonoBehaviour
         _stateMachine.moveSpeed = MoveSpeed;
         _stateMachine.transform = transform;
         _stateMachine.playerAnimation = playerAnimation;
+        _stateMachine.SpawnPoint = SpawnPoint;
     }
     private void Start()
     {
@@ -28,5 +30,10 @@ public class PlayerStateMachineComponent : MonoBehaviour
     private void FixedUpdate()
     {
         _stateMachine.OnFixedUpdate();
+    }
+
+    public void ChangeDeadState()
+    {
+        _stateMachine.TransitionToState<PlayerStateMachine.PlayerState>(PlayerStateMachine.PlayerState.DEAD);
     }
 }

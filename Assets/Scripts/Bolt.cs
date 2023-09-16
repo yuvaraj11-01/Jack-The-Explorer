@@ -20,7 +20,11 @@ public class Bolt : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.collider.tag == "BoltSwitch")
+        if (collision.collider.tag == "Player")
+        {
+            collision.collider.GetComponent<PlayerStateMachineComponent>().ChangeDeadState();
+        }
+        else if (collision.collider.tag == "BoltSwitch")
         {
             Debug.Log("Charged");
             collision.collider.GetComponent<Charger>().Activate();

@@ -7,13 +7,15 @@ public class PlayerStateMachine : AbstractHierarchicalFiniteStateMachine
     public enum PlayerState
     {
         IDLE,
-        WALK
+        WALK,
+        DEAD
     }
     public PlayerStateMachine()
     {
         Init(PlayerState.IDLE,
             Create<IdleState, PlayerState>(PlayerState.IDLE, this),
-            Create<WalkState, PlayerState>(PlayerState.WALK, this)
+            Create<WalkState, PlayerState>(PlayerState.WALK, this),
+            Create<DeadState, PlayerState>(PlayerState.DEAD, this)
         );
     }
 
@@ -23,6 +25,7 @@ public class PlayerStateMachine : AbstractHierarchicalFiniteStateMachine
     public float moveSpeed;
     public Transform transform;
     public PlayerAnimation playerAnimation;
+    public Transform SpawnPoint;
 
     public override void OnStateMachineEntry()
     {
@@ -100,6 +103,51 @@ public class PlayerStateMachine : AbstractHierarchicalFiniteStateMachine
         public override void OnExit()
         {
         }
+    }
+
+    public class DeadState : AbstractState
+    {
+        PlayerStateMachine _psm;
+
+        float totalTime = 4;
+        float timeLeft;
+        public override void OnEnter()
+        {
+            _psm = (PlayerStateMachine)_parentStateMachine;
+            Debug.Log($"{_psm.ToString()} Dead State");
+            _psm.playerAnimation.EnableRagdoll();
+            timeLeft = Time.time ;
+            finish = false;
+        }
+        bool lookTween;
+        bool finish;
+        public override void OnUpdate()
+        {
+            if (!finish)
+                if (Time.time >= timeLeft + totalTime)
+                {
+                    Restart();
+                    finish = true;
+                }
+        }
+        public override void OnFixedUpdate()
+        {
+        }
+        public override void OnExit()
+        {
+        }
+
+        void Restart()
+        {
+            _psm.transform.gameObject.SetActive(false);
+            _psm.transform.DOMove(_psm.SpawnPoint.position, 1).OnComplete(()=> {
+                _psm.playerAnimation.DisableRagdoll();
+                _psm.transform.gameObject.SetActive(true);
+                TransitionToState(PlayerState.IDLE);
+            });
+        }
+
+
     }
 
     public override string ToString()
