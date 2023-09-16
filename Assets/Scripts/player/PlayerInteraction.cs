@@ -32,6 +32,12 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        if (UiObject)
+            Destroy(UiObject.gameObject);
+        avilableInteraction = null;
+    }
 
     private void Awake()
     {
