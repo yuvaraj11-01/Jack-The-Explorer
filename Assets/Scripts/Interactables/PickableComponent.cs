@@ -57,6 +57,8 @@ public class PickableComponent : MonoBehaviour, IInteractable
         transform.SetParent(null, true);
         transform.position = initPos;
         picked = false;
+        rb.isKinematic = false;
+        coll.enabled = true;
     }
 
     private void OnEnable ()

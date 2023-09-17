@@ -140,13 +140,14 @@ public class PlayerStateMachine : AbstractHierarchicalFiniteStateMachine
 
         void Restart()
         {
-            //_psm.transform.gameObject.SetActive(false);
-            //_psm.transform.DOMove(_psm.SpawnPoint.position, 1).OnComplete(()=> {
-            //    _psm.playerAnimation.DisableRagdoll();
-            //    _psm.transform.gameObject.SetActive(true);
-            //    TransitionToState(PlayerState.IDLE);
-            //});
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            _psm.transform.gameObject.SetActive(false);
+            _psm.transform.DOMove(_psm.SpawnPoint.position, 1).OnComplete(() =>
+            {
+                _psm.playerAnimation.DisableRagdoll();
+                _psm.transform.gameObject.SetActive(true);
+                TransitionToState(PlayerState.IDLE);
+            });
+            //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
 

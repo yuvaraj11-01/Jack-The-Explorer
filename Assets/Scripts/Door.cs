@@ -9,4 +9,11 @@ public class Door : MonoBehaviour
     {
         transform.DOScaleY(0, 0.5f);
     }
+
+    public void CloseDoor()
+    {
+        transform.DOScaleY(1, 0.5f);
+    }
+
+
 }
