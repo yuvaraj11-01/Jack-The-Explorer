@@ -15,5 +15,7 @@ public class PlayerDialogueReferances : MonoBehaviour
 
 
     public GameObject OnreadSymbol;
+    public GameObject OnOpenSymbolPasscode;
+
 
 }

@@ -12,6 +12,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] Camera cam;
     [SerializeField] RectTransform canvas;
     [SerializeField] RectTransform SymbolInfoDisplay;
+    [SerializeField] RectTransform PassCodeWindow;
+    [SerializeField] GameObject errorText, successText;
+
 
     public static UIManager Instance;
 
@@ -52,11 +55,52 @@ public class UIManager : MonoBehaviour
             PlayerDialogueReferances.Instance.OnreadSymbol.SetActive(false);
             PlayerDialogueReferances.Instance.OnreadSymbol.GetComponent<DialogueManager>().endDialogueEvent.RemoveListener(OnreadFinish);
             PlayerStateMachineComponent.Instance.UnpausePlayer();
+            SymbolInfoDisplay.gameObject.SetActive(false);
 
         });
 
     }
 
+    public void ShowPassCodeWindow()
+    {
+        PlayerStateMachineComponent.Instance.pausePlayer();
+
+        PassCodeWindow.localScale = Vector3.zero;
+        PassCodeWindow.gameObject.SetActive(true);
+        errorText.SetActive(false);
+        successText.SetActive(false);
+        PassCodeWindow.DOScale(1, 0.5f).SetEase(Ease.OutSine).OnComplete(() =>
+        {
+            PlayerDialogueReferances.Instance.OnOpenSymbolPasscode.SetActive(true);
+            PlayerDialogueReferances.Instance.OnOpenSymbolPasscode.GetComponent<DialogueManager>();
+        });
+    }
+
+    public void ClosePassCodeWindow()
+    {
+
+        PassCodeWindow.DOScale(0, 0.5f).SetEase(Ease.InSine).OnComplete(() =>
+        {
+
+            PlayerStateMachineComponent.Instance.UnpausePlayer();
+            PassCodeWindow.gameObject.SetActive(false);
+
+
+        });
+
+    }
+
+    public void ShowInvalidEntry()
+    {
+        errorText.SetActive(true);
+        successText.SetActive(false);
+    }
+
+    public void ShowvalidEntry()
+    {
+        errorText.SetActive(false);
+        successText.SetActive(true);
+    }
 
 }
 
