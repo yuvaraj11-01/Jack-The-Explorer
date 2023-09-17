@@ -9,6 +9,9 @@ public class Spike : MonoBehaviour
         if(other.tag == "Player")
         {
             other.GetComponent<PlayerStateMachineComponent>().ChangeDeadState();
+        }else if (other.tag == "Box")
+        {
+            other.GetComponent<PickableComponent>().Reset();
         }
     }
 }

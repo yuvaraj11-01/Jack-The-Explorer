@@ -11,6 +11,8 @@ public class PickableComponent : MonoBehaviour, IInteractable
     [SerializeField] Rig pickUpRig;
     [SerializeField] Transform pickedPos;
     [SerializeField] LayerMask detectLayers;
+    [SerializeField] Rigidbody rb;
+    [SerializeField] Collider coll;
     public Vector2 interactionUIOffset;
     InputControll inputs;
 
@@ -26,12 +28,12 @@ public class PickableComponent : MonoBehaviour, IInteractable
     {
         if (!picked) return;
 
-        Ray ray = new Ray() { direction = transform.forward, origin = transform.position };
-        if (Physics.Raycast(ray, 2, detectLayers))
-        {
-            Debug.Log("----");
-            return;
-        }
+        //Ray ray = new Ray() { direction = transform.forward, origin = transform.position };
+        //if (Physics.Raycast(ray, 2, detectLayers))
+        //{
+        //    Debug.Log("----");
+        //    return;
+        //}
 
         var currentValue = pickUpRig.weight;
         DOTween.To(() => currentValue, x => currentValue = x, 0, .1f).OnUpdate(() =>
@@ -41,7 +43,10 @@ public class PickableComponent : MonoBehaviour, IInteractable
             transform.parent = null;
             transform.position = pickedPos.root.position + pickedPos.root.forward;
             picked = false;
-
+            inputs.PlayerMap.Interact.performed -= Interact_performed;
+            isRegistered = false;
+            rb.isKinematic = false;
+            coll.enabled = true;
         });
     }
 
@@ -70,6 +75,8 @@ public class PickableComponent : MonoBehaviour, IInteractable
         }
     }
 
+    bool isRegistered;
+
     public void PickUp()
     {
         var currentValue = pickUpRig.weight;
@@ -79,6 +86,14 @@ public class PickableComponent : MonoBehaviour, IInteractable
         }).OnComplete(()=> {
             transform.parent = pickedPos;
             transform.localPosition = Vector3.zero;
+            transform.rotation = Quaternion.identity;
+            if (!isRegistered)
+            {
+                inputs.PlayerMap.Interact.performed += Interact_performed;
+                isRegistered = true;
+            }
+            rb.isKinematic = true;
+            coll.enabled = false;
         });
         
     }
@@ -88,8 +103,9 @@ public class PickableComponent : MonoBehaviour, IInteractable
         inputs = new InputControll();
         inputs.PlayerMap.Enable();
 
-        inputs.PlayerMap.Interact.performed += Interact_performed;
         initPos = transform.position;
+        rb = GetComponent<Rigidbody>();
+        coll = GetComponent<Collider>();
     }
 
     private void Interact_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
