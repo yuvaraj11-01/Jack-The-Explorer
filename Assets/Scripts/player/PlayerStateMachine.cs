@@ -1,6 +1,7 @@
 using UnityEngine;
 using KevinCastejon.HierarchicalFiniteStateMachine;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class PlayerStateMachine : AbstractHierarchicalFiniteStateMachine
 {
@@ -139,12 +140,13 @@ public class PlayerStateMachine : AbstractHierarchicalFiniteStateMachine
 
         void Restart()
         {
-            _psm.transform.gameObject.SetActive(false);
-            _psm.transform.DOMove(_psm.SpawnPoint.position, 1).OnComplete(()=> {
-                _psm.playerAnimation.DisableRagdoll();
-                _psm.transform.gameObject.SetActive(true);
-                TransitionToState(PlayerState.IDLE);
-            });
+            //_psm.transform.gameObject.SetActive(false);
+            //_psm.transform.DOMove(_psm.SpawnPoint.position, 1).OnComplete(()=> {
+            //    _psm.playerAnimation.DisableRagdoll();
+            //    _psm.transform.gameObject.SetActive(true);
+            //    TransitionToState(PlayerState.IDLE);
+            //});
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
 
