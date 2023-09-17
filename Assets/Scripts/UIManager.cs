@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
+using HeneGames.DialogueSystem;
+
 
 public class UIManager : MonoBehaviour
 {
@@ -14,7 +17,7 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
             Instance = this;
     }
 
@@ -26,11 +29,34 @@ public class UIManager : MonoBehaviour
         return uiObj;
     }
 
-    public void ShowSymbolInteractUI()
+    public void ShowSymbolInteractUI(Sprite symbolSprite)
     {
+        PlayerStateMachineComponent.Instance.pausePlayer();
+
         SymbolInfoDisplay.localScale = Vector3.zero;
+        SymbolInfoDisplay.Find("SymbolImage").GetComponent<Image>().sprite = symbolSprite;
         SymbolInfoDisplay.gameObject.SetActive(true);
-        SymbolInfoDisplay.DOScale(1, 0.5f).SetEase(Ease.OutSine);
+        SymbolInfoDisplay.DOScale(1, 0.5f).SetEase(Ease.OutSine).OnComplete(() =>
+        {
+            PlayerDialogueReferances.Instance.OnreadSymbol.SetActive(true);
+            PlayerDialogueReferances.Instance.OnreadSymbol.GetComponent<DialogueManager>().endDialogueEvent.AddListener(OnreadFinish);
+        });
+
     }
 
+    void OnreadFinish()
+    {
+
+        SymbolInfoDisplay.DOScale(0, 0.5f).SetEase(Ease.InSine).OnComplete(() =>
+        {
+            PlayerDialogueReferances.Instance.OnreadSymbol.SetActive(false);
+            PlayerDialogueReferances.Instance.OnreadSymbol.GetComponent<DialogueManager>().endDialogueEvent.RemoveListener(OnreadFinish);
+            PlayerStateMachineComponent.Instance.UnpausePlayer();
+
+        });
+
+    }
+
+
 }
+

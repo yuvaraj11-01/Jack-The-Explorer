@@ -8,9 +8,15 @@ public class PlayerStateMachineComponent : MonoBehaviour
     [SerializeField] PlayerAnimation playerAnimation;
     [SerializeField] Transform SpawnPoint;
 
+
+    public static PlayerStateMachineComponent Instance;
+
     private PlayerStateMachine _stateMachine;
     private void Awake()
     {
+        if (Instance == null)
+            Instance = this;
+
         _stateMachine = AbstractHierarchicalFiniteStateMachine.CreateRootStateMachine<PlayerStateMachine>("PlayerStateMachine");
         _stateMachine.rb = GetComponent<Rigidbody>();
         _stateMachine.moveSpeed = MoveSpeed;
@@ -36,4 +42,16 @@ public class PlayerStateMachineComponent : MonoBehaviour
     {
         _stateMachine.TransitionToState<PlayerStateMachine.PlayerState>(PlayerStateMachine.PlayerState.DEAD);
     }
+
+    public void pausePlayer()
+    {
+        _stateMachine.inputs.PlayerMap.Disable();
+    }
+
+    public void UnpausePlayer()
+    {
+        _stateMachine.inputs.PlayerMap.Enable();
+    }
+
+
 }

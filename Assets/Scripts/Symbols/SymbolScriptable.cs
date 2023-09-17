@@ -6,7 +6,7 @@ using System.Linq;
 [CreateAssetMenu(fileName = "Symbols", menuName = "JTE/ symbols")]
 public class SymbolScriptable : ScriptableObject
 {
-    [SerializeField] List<SymbolContainer> symbols;
+    [SerializeField] List<SymbolContainer> symbols = new List<SymbolContainer>();
 
     public SymbolContainer GetSymbol(int ID)
     {

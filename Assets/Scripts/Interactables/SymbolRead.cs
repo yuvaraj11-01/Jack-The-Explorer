@@ -16,7 +16,7 @@ public class SymbolRead : MonoBehaviour
             return;
         }
 
-        UIManager.Instance.ShowSymbolInteractUI();
+        UIManager.Instance.ShowSymbolInteractUI(symbol.symbolSprite);
 
     }
 }
